@@ -18,13 +18,13 @@
 # updated on April 24, 2010 by Ivan Komissarov aka Nevermore #
 ##############################################################
 
-C++ = g++
-CC = gcc
+C++ = emcc
+CC = emcc
 AR = ar
-DFLAGS = -D__SYS_ZLIB
+DFLAGS = -D __SYS_ZLIB -s USE_ZLIB=1
 OFLAGS =
-LFLAGS = -lbz2 -lz
-CFLAGS = -fPIC -D_7ZIP_ST
+#LFLAGS = -lbz2 -lz
+CFLAGS = -fPIC -D _7ZIP_ST
 CFLAGS += $(OFLAGS) $(DFLAGS)
 
 OBJS =  src/adpcm/adpcm.o \
@@ -48,7 +48,8 @@ OBJS =  src/adpcm/adpcm.o \
 	src/SFileOpenFileEx.o \
 	src/SFilePatchArchives.o \
 	src/SFileReadFile.o \
-	src/SFileVerify.o
+	src/SFileVerify.o \
+	
 
 COBJS = src/libtomcrypt/src/hashes/sha1.o \
 	src/libtomcrypt/src/hashes/hash_memory.o \
@@ -269,7 +270,7 @@ SLIB = libStorm.a
 all: $(OBJS) $(COBJS) $(LIB) $(SLIB)
 
 $(LIB): $(OBJS) $(COBJS)
-	$(C++) $(ARCH) -shared -o $(LIB) $(OBJS) $(COBJS) $(LFLAGS)
+	emcc $(ARCH)--bind src/emscripten.cpp -g3 $(OBJS) $(COBJS) $(LFLAGS) -o libStorm.js -s EXPORTED_FUNCTIONS="['_SFileOpenArchive']"
 
 $(SLIB): $(OBJS) $(COBJS)
 	$(AR) rcs $(SLIB) $(OBJS) $(COBJS)
