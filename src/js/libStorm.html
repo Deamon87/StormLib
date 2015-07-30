@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Emscripten-Generated Code</title>
+
+    <!-- Q object for promises -->
+    <script data-require="q.js@*" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/q.js/1.0.0/q.min.js"></script>
+</head>
+<body>
+<input type="file" id="fileElem" multiple style="display:none" onchange="handleFiles(this.files)">
+<a href="#" id="fileSelect">Select some files</a>
+<button onclick="readFile()">Read file</button>
+
+<script type='text/javascript'>
+    //var statusElement = document.getElementById('status');
+    //var progressElement = document.getElementById('progress');
+    //var spinnerElement = document.getElementById('spinner');
+
+    function getUniqueId(){
+        var id = new Date().getUTCMilliseconds();
+        return id;
+    }
+    var tableOfDeferreds = {};
+    var worker = new Worker('libStorm.js');
+    worker.onmessage = function (e) {
+        var message = e.data;
+        switch (message.action) {
+            case 'printErr' :
+                console.error(message.text);
+                break;
+
+            /* Storm lib functions */
+            case 'SFileSetLocale':
+            case 'SFileGetLocale':
+            case 'SFileOpenArchive':
+            case 'SFileCreateArchive':
+            case 'SFileGetArchiveBitmap':
+            case 'SFileFlushArchive':
+            case 'SFileCloseArchive':
+
+            case 'SFileAddListFile':
+
+            case 'SFileSetCompactCallback':
+            case 'SFileCompactArchive':
+
+            case 'SFileGetMaxFileCount':
+            case 'SFileSetMaxFileCount':
+            case 'SFileGetAttributes':
+            case 'SFileSetAttributes':
+            case 'SFileUpdateFileAttributes':
+
+            case 'SFileOpenPatchArchive':
+            case 'SFileIsPatchedArchive':
+
+            case 'SFileOpenFileEx':
+            case 'SFileGetFileSize':
+            case 'SFileSetFilePointer':
+            case 'SFileReadFile':
+            case 'SFileCloseFile':
+
+            case 'SFileHasFile':
+            case 'SFileGetFileName':
+            case 'SFileGetFileInfo':
+
+            case 'SFileExtractFile':
+
+            case 'SFileVerifyFile':
+            case 'SFileVerifyRawData':
+            case 'SFileVerifyArchive':
+
+            case 'SFileFindFirstFile':
+            case 'SFileFindNextFile':
+            case 'SFileFindClose':
+
+            case 'SListFileFindFirstFile':
+            case 'SListFileFindNextFile':
+            case 'SListFileFindClose':
+
+            case 'SFileEnumLocales':
+
+            case 'SFileCreateFile':
+            case 'SFileWriteFile':
+            case 'SFileFinishFile':
+            case 'SFileAddFileEx':
+            case 'SFileAddFile':
+            case 'SFileAddWave':
+            case 'SFileRemoveFile':
+            case 'SFileRenameFile':
+            case 'SFileSetFileLocale':
+            case 'SFileSetDataCompression':
+            case 'SFileSetAddFileCallback':
+
+            case 'SCompImplode':
+            case 'SCompExplode':
+            case 'SCompCompress':
+            case 'SCompDecompress':
+                var promise = tableOfDeferreds[message.id];
+                delete tableOfDeferreds[message.id];
+
+                promise.resolve(message);
+
+                break;
+        }
+    };
+
+    function SFileSetLocale(){}
+    function SFileGetLocale(){}
+    function SFileOpenArchive(fileName, priority, flags){
+        var deferred = Q.defer();
+        var requestId = getUniqueId();
+        tableOfDeferreds[requestId] = deferred;
+
+        worker.postMessage({
+            action : 'SFileOpenArchive',
+            id : requestId,
+            fileName : fileName,
+            priority : priority,
+            flags : flags
+        });
+
+        return deferred.promise;
+
+        //return {hMPQ : value} when succeed
+        //return {errorCode : value} when failed
+    }
+    function SFileCreateArchive(){}
+    function SFileGetArchiveBitmap(){}
+    function SFileFlushArchive(){}
+    function SFileCloseArchive(){}
+
+    function SFileAddListFile(){}
+
+    function SFileSetCompactCallback(){}
+    function SFileCompactArchive(){}
+
+    function SFileGetMaxFileCount(){}
+    function SFileSetMaxFileCount(){}
+    function SFileGetAttributes(){}
+    function SFileSetAttributes(){}
+    function SFileUpdateFileAttributes(){}
+
+    function SFileOpenPatchArchive(){}
+    function SFileIsPatchedArchive(){}
+
+    function SFileOpenFileEx(hMPQ, fileName, dwSearchScope){
+        var deferred = Q.defer();
+        var requestId = getUniqueId();
+        tableOfDeferreds[requestId] = deferred;
+
+        worker.postMessage({
+            action : 'SFileOpenFileEx',
+            id : requestId,
+            hMPQ : hMPQ,
+            fileName : fileName,
+            dwSearchScope : dwSearchScope
+        });
+
+        return deferred.promise;
+
+        //return {hFile : value} when succeed
+        //return {errorCode : value} when failed
+    }
+    function SFileGetFileSize(hFile){
+        var deferred = Q.defer();
+        var requestId = getUniqueId();
+        tableOfDeferreds[requestId] = deferred;
+
+        worker.postMessage({
+            action : 'SFileGetFileSize',
+            id : requestId,
+            hFile : hFile
+        });
+
+        return deferred.promise;
+
+        //return {fileSize : value} when succeed
+        //return {errorCode : value} when failed
+    }
+    function SFileSetFilePointer(){}
+    function SFileReadFile(hFile, dwToRead){
+        var deferred = Q.defer();
+        var requestId = getUniqueId();
+        tableOfDeferreds[requestId] = deferred;
+
+        worker.postMessage({
+            action : 'SFileReadFile',
+            id : requestId,
+            hFile : hFile,
+            dwToRead : dwToRead
+        });
+
+        return deferred.promise;
+
+
+        //return {dwRead : value, buffer : value} when succeed
+        //return {errorCode : value} when failed
+    }
+    function SFileCloseFile(){}
+
+    function SFileHasFile(){}
+    function SFileGetFileName(){}
+    function SFileGetFileInfo(){}
+
+    function SFileExtractFile(){}
+
+    function SFileVerifyFile(){}
+    function SFileVerifyRawData(){}
+    function SFileVerifyArchive(){}
+
+    function SFileFindFirstFile(){}
+    function SFileFindNextFile(){}
+    function SFileFindClose(){}
+
+    function SListFileFindFirstFile(){}
+    function SListFileFindNextFile(){}
+    function SListFileFindClose(){}
+
+    function SFileEnumLocales(){}
+
+    function SFileCreateFile(){}
+    function SFileWriteFile(){}
+    function SFileFinishFile(){}
+    function SFileAddFileEx(){}
+    function SFileAddFile(){}
+    function SFileAddWave(){}
+    function SFileRemoveFile(){}
+    function SFileRenameFile(){}
+    function SFileSetFileLocale(){}
+    function SFileSetDataCompression(){}
+    function SFileSetAddFileCallback(){}
+
+    function SCompImplode(){}
+    function SCompExplode(){}
+    function SCompCompress(){}
+    function SCompDecompress(){}
+    
+
+    //Page script
+    var fileSelect = document.getElementById("fileSelect"),
+        fileElem = document.getElementById("fileElem");
+
+    fileSelect.addEventListener("click", function (e) {
+        if (fileElem) {
+            fileElem.click();
+        }
+        e.preventDefault(); // prevent navigation to "#"
+    }, false);
+
+    function handleFiles(files) {
+        worker.postMessage({
+            action: 'addFilesToRepository',
+            fileList: files
+        });
+
+    }
+
+    function uintToString(uintArray) {
+        var encodedString = String.fromCharCode.apply(null, uintArray),
+                decodedString = decodeURIComponent(escape(encodedString));
+        return decodedString;
+    }
+
+    function readFile() {
+        Q.async(function*() {
+
+            //var SFileOpenArchive =  Module.ccall('SFileOpenArchive', 'number', ['string', 'number', 'number', 'number'], {async: true});
+            //var SFileOpenFileEx =  Module.ccall('SFileOpenFileEx', 'number', ['string', 'number', 'number', 'number'], {async: true});
+
+            /* 1. Open MPQ archive */
+            var fileName = "someArchive.mpq";
+            var fileOpenResult = yield SFileOpenArchive(fileName, 0, 0);
+
+            /* 2. Open file from archive */
+            var listfileHandler = yield SFileOpenFileEx(fileOpenResult.hMpq, "(listfile)", 0);
+
+            /* 3. Get file size */
+            var fileSize = yield SFileGetFileSize(listfileHandler.hFile);
+            console.log('file size = '+fileSize);
+
+            /* 4. Get file content */
+            var fileContent = yield SFileReadFile(listfileHandler.hFile, fileSize.fileSize);
+            console.log(uintToString(fileContent.buffer));
+
+        })().done();;
+    }
+
+</script>
+</body>
+</html>
