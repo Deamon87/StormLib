@@ -29,7 +29,7 @@ self.onmessage = function (event) {
             writeStringToMemory(fileName, fileNameMem);
 
 
-            /* 3. Call funtion */
+            /* 3. Call function */
             var a = Module._SFileOpenArchive(fileNameMem, priority, flags, MPQPtrHeap.byteOffset);
 
             /* 4. Get function result */
@@ -47,6 +47,9 @@ self.onmessage = function (event) {
             callResult.action = 'SFileOpenArchive';
 
             self.postMessage(callResult);
+
+            /* 6. Free memory */
+            Module._free(MPQPtrHeap.byteOffset);
 
             break;
 
@@ -77,19 +80,19 @@ self.onmessage = function (event) {
 
             /* 2. Bloat code to pass parameters */                                                                                                                      22.
             var hFilePtr = Module._malloc(4);
-            var filePtrHeap = new Uint8Array(Module.HEAPU8.buffer, hFilePtr, 4);
+            var hFilePtrHeap = new Uint8Array(Module.HEAPU8.buffer, hFilePtr, 4);
 
             var fileNameMem = Runtime.stackAlloc((fileName.length << 2) + 1);
             writeStringToMemory(fileName, fileNameMem);
 
 
             /* 3. Call function */
-            var a = Module._SFileOpenFileEx(hMPQ, fileNameMem, dwSearchScope, filePtrHeap.byteOffset);
+            var a = Module._SFileOpenFileEx(hMPQ, fileNameMem, dwSearchScope, hFilePtrHeap.byteOffset);
 
             /* 4. Get function result */
             var callResult;
             if (a) {
-                var hFile = new Uint32Array(filePtrHeap.buffer, filePtrHeap.byteOffset, 1)[0];
+                var hFile = new Uint32Array(hFilePtrHeap.buffer, hFilePtrHeap.byteOffset, 1)[0];
                 callResult = {hFile : hFile};
             } else {
                 var errorCode = Module._GetLastError();
@@ -101,6 +104,9 @@ self.onmessage = function (event) {
             callResult.action = 'SFileOpenFileEx';
 
             self.postMessage(callResult);
+
+            /* 6. Free memory */
+            Module._free(hFilePtrHeap.byteOffset);
 
             break;
 
@@ -133,6 +139,8 @@ self.onmessage = function (event) {
 
             self.postMessage(callResult);
 
+            /* 6. Free memory */
+            Module._free(fileSizePtrHeap.byteOffset);
 
             break;
         case 'SFileSetFilePointer':
@@ -170,6 +178,10 @@ self.onmessage = function (event) {
             callResult.action = 'SFileReadFile';
 
             self.postMessage(callResult);
+
+            /* 6. Free memory */
+            Module._free(dwReadPtrHeap.byteOffset);
+            Module._free(pBufferPtrHeap.byteOffset);
 
             break;
         case 'SFileCloseFile':
