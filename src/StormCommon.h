@@ -57,13 +57,6 @@
 #include "jenkins/lookup.h"
 
 //-----------------------------------------------------------------------------
-// Emscripten
-#ifdef PLATFORM_EMSCRIPTEN
-  #include <emscripten.h>
-#endif
-  
-
-//-----------------------------------------------------------------------------
 // StormLib private defines
 
 #define ID_MPQ_FILE            0x46494c45     // Used internally for checking TMPQFile ('FILE')
