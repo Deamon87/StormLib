@@ -163,7 +163,11 @@ static bool BaseFile_Open(TFileStream * pStream, const TCHAR * szFileName, DWORD
         // 1 second = 10000000 (decimal) in FILETIME
         // Set the start to 1.1.1970 00:00:00
         pStream->Base.File.FileTime = 0x019DB1DED53E8000ULL + (10000000 * fileinfo.st_mtime);
-        pStream->Base.File.FileSize = (ULONGLONG)fileinfo.st_size;
+#ifdef __EMSCRIPTEN__
+        pStream->Base.File.FileSize  = fileinfo.st_size;
+#else
+        pStream->Base.File.FileSize  = (ULONGLONG)fileinfo.st_size;
+#endif
         pStream->Base.File.hFile = (HANDLE)handle;
     }
 #endif
@@ -506,7 +510,11 @@ static bool BaseMap_Open(TFileStream * pStream, const TCHAR * szFileName, DWORD 
                 // 1 second = 10000000 (decimal) in FILETIME
                 // Set the start to 1.1.1970 00:00:00
                 pStream->Base.Map.FileTime = 0x019DB1DED53E8000ULL + (10000000 * fileinfo.st_mtime);
+#ifdef __EMSCRIPTEN__
+                pStream->Base.Map.FileSize = (unsigned int)fileinfo.st_size;
+#else
                 pStream->Base.Map.FileSize = (ULONGLONG)fileinfo.st_size;
+#endif
                 pStream->Base.Map.FilePos = 0;
                 bResult = true;
             }

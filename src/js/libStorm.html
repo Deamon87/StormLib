@@ -254,6 +254,7 @@
             fileList: files
         });
 
+        readFile(files[0].name);
     }
 
     function uintToString(uintArray) {
@@ -262,14 +263,13 @@
         return decodedString;
     }
 
-    function readFile() {
+    function readFile(fileName) {
         Q.async(function*() {
 
             //var SFileOpenArchive =  Module.ccall('SFileOpenArchive', 'number', ['string', 'number', 'number', 'number'], {async: true});
             //var SFileOpenFileEx =  Module.ccall('SFileOpenFileEx', 'number', ['string', 'number', 'number', 'number'], {async: true});
 
             /* 1. Open MPQ archive */
-            var fileName = "someArchive.mpq";
             var fileOpenResult = yield SFileOpenArchive(fileName, 0, 0);
 
             /* 2. Open file from archive */

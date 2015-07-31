@@ -22,7 +22,7 @@ C++ = emcc
 CC = emcc
 AR = ar
 EXPORTS_FILE=makefile_exports.txt
-DFLAGS = -D __SYS_ZLIB -D PLATFORM_EMSCRIPTEN -D __EMSCRIPTEN__=1 -s USE_ZLIB=1 
+DFLAGS = -D __SYS_ZLIB -D PLATFORM_EMSCRIPTEN -D __EMSCRIPTEN__=1 -s USE_ZLIB=1 -s TOTAL_MEMORY=100000000
 OFLAGS =
 #LFLAGS = -lbz2 -lz
 CFLAGS = -fPIC -D _7ZIP_ST
@@ -33,7 +33,7 @@ OBJS =  src/adpcm/adpcm.o \
 	src/sparse/sparse.o \
 	src/FileStream.o \
 	src/SBaseCommon.o \
-        src/SBaseDumpData.o \
+	src/SBaseDumpData.o \
 	src/SBaseFileTable.o \
 	src/SBaseSubTypes.o \
 	src/SCompression.o \
@@ -271,9 +271,9 @@ SLIB = libStorm.a
 all: $(OBJS) $(COBJS) $(LIB) $(SLIB)
 
 $(LIB): $(OBJS) $(COBJS)
-	emcc $(ARCH) -g0 $(OBJS) $(COBJS) $(LFLAGS) -o libStorm.bc -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE)
+	emcc $(ARCH) -g4 -s TOTAL_MEMORY=100000000 $(OBJS) $(COBJS) $(LFLAGS) -o libStorm.bc -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE)
 	mkdir -p dist
-	emcc $(ARCH)--bind -O0 libStorm.bc --pre-js ./src/js/preRun.js -o ./dist/libStorm.js -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE) 
+	emcc $(ARCH)--bind -g4 -O0 -s TOTAL_MEMORY=100000000 libStorm.bc --pre-js ./src/js/preRun.js -o ./dist/libStorm.js -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE) 
 	
 $(SLIB): $(OBJS) $(COBJS)
 	$(AR) rcs $(SLIB) $(OBJS) $(COBJS)
