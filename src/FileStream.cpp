@@ -164,11 +164,13 @@ static bool BaseFile_Open(TFileStream * pStream, const TCHAR * szFileName, DWORD
         // Set the start to 1.1.1970 00:00:00
         pStream->Base.File.FileTime = 0x019DB1DED53E8000ULL + (10000000 * fileinfo.st_mtime);
 #ifdef __EMSCRIPTEN__
-        pStream->Base.File.FileSize  = fileinfo.st_size;
+        pStream->Base.File.FileSize  = (unsigned int)fileinfo.st_size;
 #else
         pStream->Base.File.FileSize  = (ULONGLONG)fileinfo.st_size;
 #endif
         pStream->Base.File.hFile = (HANDLE)handle;
+	
+        //printf("\nAfter fstat64 pStream->Base.File.FileSize = %llu\n", pStream->Base.File.FileSize);
     }
 #endif
 
@@ -216,15 +218,23 @@ static bool BaseFile_Read(
 
         // If the byte offset is different from the current file position,
         // we have to update the file position   xxx
+	//printf("\nByteOffset != pStream->Base.File.FilePos:\n");
+        //printf("ByteOffset = %llu\n", ByteOffset);
+	//printf("pStream->Base.File.FilePos = %llu\n ", pStream->Base.File.FilePos);
+		
+	
         if(ByteOffset != pStream->Base.File.FilePos)
         {
             lseek64((intptr_t)pStream->Base.File.hFile, (off64_t)(ByteOffset), SEEK_SET);
             pStream->Base.File.FilePos = ByteOffset;
         }
+       //printf("After ByteOffset != pStream->Base.File.FilePos:\n");
+       //printf("pStream->Base.File.FilePos = %llu\n ", pStream->Base.File.FilePos);
 
         // Perform the read operation
         if(dwBytesToRead != 0)
         {
+	    //printf("dwBytesToRead = %d\n", dwBytesToRead);
             bytes_read = read((intptr_t)pStream->Base.File.hFile, pvBuffer, (size_t)dwBytesToRead);
             if(bytes_read == -1)
             {

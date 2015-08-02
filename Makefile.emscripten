@@ -22,11 +22,13 @@ C++ = emcc
 CC = emcc
 AR = ar
 EXPORTS_FILE=makefile_exports.txt
-DFLAGS = -D __SYS_ZLIB -D PLATFORM_EMSCRIPTEN -D __EMSCRIPTEN__=1 -s USE_ZLIB=1 -s TOTAL_MEMORY=100000000
-OFLAGS =
+DFLAGS = -D __SYS_ZLIB -D PLATFORM_EMSCRIPTEN -D __EMSCRIPTEN__=1 -s USE_ZLIB=1 -s ALLOW_MEMORY_GROWTH=1
+OFLAGS = 
 #LFLAGS = -lbz2 -lz
-CFLAGS = -fPIC -D _7ZIP_ST
+CFLAGS = -g0 -O3 --llvm-lto 3 -fPIC -D _7ZIP_ST
 CFLAGS += $(OFLAGS) $(DFLAGS)
+LFLAGS = --bind -g0 -O3 --llvm-lto 3 --pre-js ./src/js/preRun.js -o ./dist/StormLib_worker.min.js -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE) 
+
 
 OBJS =  src/adpcm/adpcm.o \
 	src/huffman/huff.o \
@@ -271,9 +273,7 @@ SLIB = libStorm.a
 all: $(OBJS) $(COBJS) $(LIB) $(SLIB)
 
 $(LIB): $(OBJS) $(COBJS)
-	emcc $(ARCH) -g4 -s TOTAL_MEMORY=100000000 $(OBJS) $(COBJS) $(LFLAGS) -o libStorm.bc -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE)
-	mkdir -p dist
-	emcc $(ARCH)--bind -g4 -O0 -s TOTAL_MEMORY=100000000 libStorm.bc --pre-js ./src/js/preRun.js -o ./dist/libStorm.js -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE) 
+	emcc $(DFLAGS) $(ARCH) $(OBJS) $(COBJS) $(LFLAGS)  
 	
 $(SLIB): $(OBJS) $(COBJS)
 	$(AR) rcs $(SLIB) $(OBJS) $(COBJS)
@@ -282,10 +282,10 @@ clean:
 	rm -f $(OBJS) $(COBJS) $(LIB)
 
 $(OBJS): %.o: %.cpp
-	$(C++) -O0 -g4 -o $@ $(CFLAGS) -c $<
+	$(C++) -o $@ $(CFLAGS) -c $<
 
 $(COBJS): %.o: %.c
-	$(CC) -O0 -g4 -o $@ $(CFLAGS) -c $<
+	$(CC) -o $@ $(CFLAGS) -c $<
 
 $(LIB): $(OBJS) $(COBJS)
 
