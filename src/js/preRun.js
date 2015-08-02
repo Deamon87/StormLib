@@ -295,7 +295,33 @@ Module['preRun'] = function () {
                 return res;*/
             },
             llseek: function (stream, offset, whence) {
-                return offset;
+	      var position = offset;
+	      
+	      //hack for 32 bit off_t
+	      if (position < 0) {
+	        //assume the file is bigger than 2gb
+		position = ((position << 32) >>> 32);
+		
+	      }
+		
+	      
+		if (whence === 1) {  // SEEK_CUR.
+		  position += stream.position;
+		} else if (whence === 2) {  // SEEK_END.
+		  if (FS.isFile(stream.node.mode)) {
+		    try {
+		      var stat = fs.fstatSync(stream.nfd);
+		      position += stat.size;
+		    } catch (e) {
+		      throw new FS.ErrnoError(ERRNO_CODES[e.code]);
+		    }
+		  }
+		}
+                if (position < 0) {
+		  position = 0;
+		}
+        
+	      return position;
             }
         });
 
