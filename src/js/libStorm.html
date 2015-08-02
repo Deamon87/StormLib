@@ -253,8 +253,7 @@
             action: 'addFilesToRepository',
             fileList: files
         });
-
-        readFile(files[0].name);
+	readFile(files[0].name)
     }
 
     function uintToString(uintArray) {
@@ -262,14 +261,48 @@
                 decodedString = decodeURIComponent(escape(encodedString));
         return decodedString;
     }
+    function Utf8ArrayToStr(array) {
+    var out, i, len, c;
+    var char2, char3;
 
-    function readFile(fileName) {
+    out = "";
+    len = array.length;
+    i = 0;
+    while(i < len) {
+    c = array[i++];
+    switch(c >> 4)
+    { 
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+        // 0xxxxxxx
+        out += String.fromCharCode(c);
+        break;
+      case 12: case 13:
+        // 110x xxxx   10xx xxxx
+        char2 = array[i++];
+        out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+        break;
+      case 14:
+        // 1110 xxxx  10xx xxxx  10xx xxxx
+        char2 = array[i++];
+        char3 = array[i++];
+        out += String.fromCharCode(((c & 0x0F) << 12) |
+                       ((char2 & 0x3F) << 6) |
+                       ((char3 & 0x3F) << 0));
+        break;
+    }
+    }
+
+    return out;
+}
+
+    function readFile(name) {
         Q.async(function*() {
 
             //var SFileOpenArchive =  Module.ccall('SFileOpenArchive', 'number', ['string', 'number', 'number', 'number'], {async: true});
             //var SFileOpenFileEx =  Module.ccall('SFileOpenFileEx', 'number', ['string', 'number', 'number', 'number'], {async: true});
 
             /* 1. Open MPQ archive */
+            var fileName = name;
             var fileOpenResult = yield SFileOpenArchive(fileName, 0, 0);
 
             /* 2. Open file from archive */
@@ -281,7 +314,7 @@
 
             /* 4. Get file content */
             var fileContent = yield SFileReadFile(listfileHandler.hFile, fileSize.fileSize);
-            console.log(uintToString(fileContent.buffer));
+            console.log(Utf8ArrayToStr(fileContent.buffer));
 
         })().done();;
     }
