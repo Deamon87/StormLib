@@ -164,6 +164,7 @@ pip-log.txt
 
 #idea directory
 .idea
+pom.xml
 
 #emscripten temp files
 *.o
