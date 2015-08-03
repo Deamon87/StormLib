@@ -5,9 +5,14 @@ self.onmessage = function (event) {
     switch(message.action) {
         case 'addFilesToRepository' :
             var fileList = message.fileList;
-            for (var i = 0; i < fileList.length; i++) {
-                var file = fileList[i];
+            if (message.fileList) {
+                for (var i = 0; i < fileList.length; i++) {
+                    var file = fileList[i];
 
+                    Module.addFileToRep(file.name, file.size, file);
+                }
+            } else {
+                var file = message.file;
                 Module.addFileToRep(file.name, file.size, file);
             }
             break;

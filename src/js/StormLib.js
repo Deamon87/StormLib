@@ -96,10 +96,14 @@ StormLib.prototype = {
 
     /* The library interface */
     addFilesToRepository : function (files) {
-        this.worker.postMessage({
-            action: 'addFilesToRepository',
-            fileList: files
-        });
+        /* Hack. Firefox likes to eat files one by one */
+        for (var i = 0; i < files.length; i++) {
+            this.worker.postMessage({
+                action: 'addFilesToRepository',
+                //fileList: files
+                file: files[i]
+            });
+        }
     },
     SFileSetLocale: function () {
     },
