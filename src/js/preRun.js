@@ -62,6 +62,28 @@ self.onmessage = function (event) {
         case 'SFileGetArchiveBitmap':
         case 'SFileFlushArchive':
         case 'SFileCloseArchive':
+            /* 1. Function parameters */
+            var hMPQ = message.hMPQ;
+
+            /* 2. Bloat code to pass parameters */
+            /* 3. Call function */
+            var a = Module._SFileCloseArchive(hMPQ);
+
+            /* 4. Get function result */
+            var callResult;
+            if (a) {
+                callResult = {};
+            } else {
+                var errorCode = Module._GetLastError();
+                callResult = { errorCode : errorCode };
+            }
+
+            /* 5. Send result */
+            callResult.id = message.id;
+            callResult.action = 'SFileCloseArchive';
+
+            self.postMessage(callResult);
+            break;
 
         case 'SFileAddListFile':
 
@@ -190,6 +212,28 @@ self.onmessage = function (event) {
 
             break;
         case 'SFileCloseFile':
+            /* 1. Function parameters */
+            var hFile = message.hFile;
+
+            /* 2. Bloat code to pass parameters */
+            /* 3. Call function */
+            var a = Module._SFileCloseFile(hFile);
+
+            /* 4. Get function result */
+            var callResult;
+            if (a) {
+                callResult = {};
+            } else {
+                var errorCode = Module._GetLastError();
+                callResult = { errorCode : errorCode };
+            }
+
+            /* 5. Send result */
+            callResult.id = message.id;
+            callResult.action = 'SFileCloseFile';
+
+            self.postMessage(callResult);
+            break;
 
         case 'SFileHasFile':
         case 'SFileGetFileName':
