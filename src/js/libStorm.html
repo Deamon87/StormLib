@@ -17,17 +17,21 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .fileListContainer {
+            position: absolute;
             width: 500px;
             height: 500px;
             float: left;
-            position: fixed
+
         }
 
         .fileContentContainer {
-            margin-left: 20px;
-            width: 599px;
+            left : 520px;
+
+            position: absolute;
+            /*margin-left: 20px;*/
+            width: 670px;
             height: 500px;
-            float: right;
+
         }
 
         .list-group {
@@ -39,7 +43,7 @@
 
         .fileContentClass {
             height: 500px !important;
-            width: 600px !important;
+            width: 670px !important;
             overflow: scroll;
             float: left;
             font-family: "Courier New", Courier, monospace;
@@ -51,7 +55,8 @@
             display: block;
             overflow: hidden;
             clear: none;
-            width: 1117px;
+            width: 1250px;
+            height : 600px;
             position: relative;
         }
     </style>
@@ -68,7 +73,7 @@
         <div id="fileList"></div>
     </div>
     <div class="fileContentContainer">
-        <span>File content:</span>
+        <span><span id="fileNameContainer"></span> content:</span>
         <span style="float:right">File size : <span id="selectedFileSize"></span></span>
         <div id="fileContent" class="fileContentClass"></div>
     </div>
@@ -179,14 +184,51 @@
                 self.currentArchive = null;
             }
         },
-        showFileContent : function (fileSize, fileContent){
+        showFileContent : function (fileName, fileSize, fileContent){
+            var path = fileName.split('\\');
+
+            var plainFileName = path[path.length-1];
+
             var html = '';
+
+            //Calc max addr length
+            var maxAddrLength = (fileSize.toString(16)).length;
+            if (maxAddrLength & 1) {
+                maxAddrLength++;
+            }
+
+            //Make header
+            var header = '';
+            for (var j = 0; j < 16; j++) {
+                var hex = j.toString(16);
+                if (hex.length == 1) hex = '0'+hex;
+                header += hex+'&nbsp;';
+            }
+
+            for (var j = 0; j < maxAddrLength+4; j++){
+                header='&nbsp;'+header;
+            }
+            html +=header+'<br/>';
+
 
             var i = 0;
 
+
             while (i < fileSize) {
+                var addrStr = '';
                 var hexStr = '';
                 var plainStr = '';
+
+                var addrStr = i.toString(16);
+                if ((addrStr.length & 1) > 0) {
+                    addrStr = '0'+addrStr;
+                }
+
+                //Filler between line start and addr
+                var filler = maxAddrLength-addrStr.length;
+                for (j = 0; j < filler; j++) {
+                    addrStr = '&nbsp;'+addrStr;
+                }
 
                 var colCnt = (fileSize - i) >= 16 ? 16 : fileSize - i;
                 for (var j = 0; j < colCnt; j ++) {
@@ -203,17 +245,19 @@
                     }
                 }
 
+                //Filler beetween byte values and text
                 var filler = (16 - colCnt)*3;
                 for (j = 0; j < filler; j++) {
                     hexStr += '&nbsp;';
                 }
 
-                html += hexStr+'&nbsp;&nbsp;&nbsp;'+plainStr+'<br />';
+                html += addrStr + ':&nbsp;|&nbsp;'+hexStr+'&nbsp;&nbsp;&nbsp;'+plainStr+'<br />';
                 i += colCnt;
             }
 
             $("#fileContent").html(html);
             $("#selectedFileSize").html(fileSize);
+            $("#fileNameContainer").html(plainFileName);
         },
         readFileContent : function (fileName){
             var self = this;
@@ -234,7 +278,7 @@
 
                 /* 4. Get file content */
                 var fileContent = yield self.stormLib.SFileReadFile(fileHandler.hFile, fileSize.fileSize);
-                self.showFileContent(fileSize.fileSize, fileContent.buffer);
+                self.showFileContent(fileName, fileSize.fileSize, fileContent.buffer);
                 if (fileContent.errorCode) {
                     window.alert('Error while reading file content. Error code = '+fileContent.errorCode);
                 }
@@ -248,7 +292,7 @@
 
             self.closeArchive();
             $("#mpqData").css("display", "block");
-            Q.async(function * () {
+            Q.async(function* () {
                 /* 1. Open MPQ archive */
                 var fileName = name;
                 var fileOpenResult = yield self.stormLib.SFileOpenArchive(fileName, 0, 0);
