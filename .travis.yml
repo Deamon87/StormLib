@@ -1,11 +1,11 @@
-os: linux
-env:
-  - LLVM_VERSION=3.8.0
-  - LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
-  - CXX=$HOME/clang-$LLVM_VERSION/bin/clang++
-  - CPPFLAGS="-I $HOME/clang-$LLVM_VERSION/include/c++/v1"
-  - CXXFLAGS=-lc++
-  - LD_LIBRARY_PATH=$HOME/clang-$LLVM_VERSION/lib:$LD_LIBRARY_PATH
+- os: linux
+  env:
+    - LLVM_VERSION=3.8.0
+    - LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
+    - CXX=$HOME/clang-$LLVM_VERSION/bin/clang++
+    - CPPFLAGS="-I $HOME/clang-$LLVM_VERSION/include/c++/v1"
+    - CXXFLAGS=-lc++
+    - LD_LIBRARY_PATH=$HOME/clang-$LLVM_VERSION/lib:$LD_LIBRARY_PATH
   global:
   - ENCRYPTION_LABEL: "eb269827b609"
   - COMMIT_AUTHOR_EMAIL: "Deamon87@travis.com"
