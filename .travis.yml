@@ -2,10 +2,10 @@ addons:
   apt:
     sources:
     # add PPAs with more up-to-date toolchains
-    - llvm-toolchain-precise-3.9
+    - llvm-toolchain-precise-3.8
     packages:
     # install toolchains
-    - clang-3.9
+    - clang-3.8
 
 node_js:
   - "node"
