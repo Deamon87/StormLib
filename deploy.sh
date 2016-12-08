@@ -44,7 +44,7 @@ rm -rf dist/**/* || exit 0
 
 compileBuild $SOURCE_BRANCH .
 
-# Now let's go have some fun with the cloned repo
+# Now let's go have some fun with the cloned repo test
 
 cd dist
 git config user.name "Travis CI"
