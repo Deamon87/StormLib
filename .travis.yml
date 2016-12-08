@@ -16,11 +16,11 @@ env:
 matrix:
   include:
    - os: linux
-     env:
-       - LLVM=/usr/local/clang-3.8/bin
      compiler: clang
      addons:
        apt:
          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
          packages: ['clang-3.8']
-     env: COMPILER=clang++-3.8
+     env:
+       - COMPILER=clang++-3.8
+       - LLVM=/usr/local/clang-3.8/bin
