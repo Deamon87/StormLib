@@ -16,6 +16,8 @@ env:
 matrix:
   include:
    - os: linux
+     env:
+       - LLVM=/usr/local/clang-3.8/bin
      compiler: clang
      addons:
        apt:
