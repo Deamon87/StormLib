@@ -18,8 +18,8 @@
 # updated on April 24, 2010 by Ivan Komissarov aka Nevermore #
 ##############################################################
 
-C++ = emcc
-CC = emcc
+C++ = ./emscripten/emscripten/master/emcc
+CC = ./emscripten/emscripten/master/emcc
 AR = ar
 EXPORTS_FILE=makefile_exports.txt
 DFLAGS = -D __SYS_ZLIB -D PLATFORM_EMSCRIPTEN -D __EMSCRIPTEN__=1 -s USE_ZLIB=1 -s ALLOW_MEMORY_GROWTH=1
