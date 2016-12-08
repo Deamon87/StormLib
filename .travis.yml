@@ -24,3 +24,12 @@ branches:
   - travis_test
 
 script: bash ./deploy.sh
+
+matrix:
+  include:
+   - os: linux
+     compiler: clang
+     addons:
+       apt:
+         sources: ['ubuntu-toolchain-r-test']
+         packages: ['libstdc++6']
