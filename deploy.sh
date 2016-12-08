@@ -28,8 +28,9 @@ SHA=`git rev-parse --verify HEAD`
 
 # Create and clone compiled emscripten
 git clone https://github.com/urho3d/emscripten-sdk.git emscripten
-./emscripten/emscripten/master/emcc
-export LLVM=$HOME/clang-$LLVM_VERSION/bin
+cd ./emscripten/emscripten
+emsdk activate latest
+cd ../..
 
 make -f Makefile.emscripten
 exit 0
