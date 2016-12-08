@@ -28,6 +28,8 @@ SHA=`git rev-parse --verify HEAD`
 
 # Create and clone compiled emscripten
 git clone https://github.com/urho3d/emscripten-sdk.git emscripten
+emcc
+cat ~/.emscripten
 
 make -f Makefile.emscripten
 exit 0
@@ -56,7 +58,6 @@ if [ -z "git diff --exit-code" ]; then
     exit 0
 fi
 
-cat ~/.emscripten
 
 # Commit the "changes", i.e. the new version.
 # The delta will show diffs between new and old versions.
