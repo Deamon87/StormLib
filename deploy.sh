@@ -53,7 +53,7 @@ if [ -z "git diff --exit-code" ]; then
 fi
 
 
-# Commit the "changes", i.e. the new version.
+# Commit the "changes" , i.e. the new version.
 # The delta will show diffs between new and old versions.
 git add --all
 git commit -m "Deploy to GitHub Pages: ${SHA}"
