@@ -27,7 +27,7 @@ OFLAGS =
 #LFLAGS = -lbz2 -lz
 CFLAGS = -g0 -O3 --llvm-lto 3 -fPIC -D _7ZIP_ST
 CFLAGS += $(OFLAGS) $(DFLAGS)
-LFLAGS = --bind -g0 -O3 --llvm-lto 3 --pre-js ./src/js/preRun.js -o ./dist/StormLib_worker.min.js -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE) 
+LFLAGS = --bind -g0 -O3 --llvm-lto 3 --pre-js ./src/js/preRun.js -o ./jsdist/StormLib_worker.min.js -s EXPORTED_FUNCTIONS=@$(EXPORTS_FILE)
 
 
 OBJS =  src/adpcm/adpcm.o \
