@@ -27,10 +27,6 @@ SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
 # Create and clone compiled emscripten
-git clone https://github.com/urho3d/emscripten-sdk.git emscripten
-cd ./emscripten/emscripten
-./emsdk activate latest
-cd ../..
 
 make -f Makefile.emscripten
 exit 0

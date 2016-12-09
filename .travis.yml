@@ -1,22 +1,19 @@
-language: cpp
+language: c
+sudo: required
+dist: trusty
+before_install:
+
+  -  sudo apt-get purge cmake
+  -  wget --no-check-certificate -qO- http://www.cmake.org/files/v3.4/cmake-3.4.3-Linux-x86_64.tar.gz -O /tmp/cmake-3.4.3-Linux-x86_64.tar.gz
+  -  tar -xf /tmp/cmake-3.4.3-Linux-x86_64.tar.gz
+  -  export PATH=$PWD/cmake-3.4.3-Linux-x86_64/bin/:$PATH
+  -  git clone --depth 1 https://github.com/urho3d/emscripten-sdk.git && emscripten-sdk/emsdk activate --build=Release sdk-master-64bit && source emscripten-sdk/emsdk_env.sh
+  -  export PATH=$(whereis -b ccache |grep -o '\S*lib\S*'):$PATH; for f in $EMSCRIPTEN/{emcc,em++}; do touch -d "2015-09-01 00:00:00 +0800" $f; done
 
 env:
   global:
   - ENCRYPTION_LABEL: "eb269827b609"
   - COMMIT_AUTHOR_EMAIL: "Deamon87@travis.com"
-  - LLVM_VERSION=3.9.0
-  - LLVM_ARCHIVE_PATH=$HOME/clang+llvm.tar.xz
-  - CXX=$HOME/clang-$LLVM_VERSION/bin/clang++
-  - LLVM=$HOME/clang-$LLVM_VERSION/bin
-  - CPPFLAGS="-I $HOME/clang-$LLVM_VERSION/include/c++/v1"
-  - CXXFLAGS=-lc++
-  - LD_LIBRARY_PATH=$HOME/clang-$LLVM_VERSION/lib:$LD_LIBRARY_PATH
-
-before_install:
-  - wget http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz -O $LLVM_ARCHIVE_PATH
-  - mkdir $HOME/clang-$LLVM_VERSION
-  - tar xf $LLVM_ARCHIVE_PATH -C $HOME/clang-$LLVM_VERSION --strip-components 1
-
 node_js:
   - "node"
 branches:
