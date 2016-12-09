@@ -12,7 +12,7 @@ before_install:
 
 env:
   global:
-  - ENCRYPTION_LABEL: "eb269827b609"
+  - ENCRYPTION_LABEL: "5448a6e517b3"
   - COMMIT_AUTHOR_EMAIL: "Deamon87@travis.com"
 node_js:
   - "node"
