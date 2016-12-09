@@ -29,7 +29,7 @@ SHA=`git rev-parse --verify HEAD`
 # Create and clone compiled emscripten
 git clone https://github.com/urho3d/emscripten-sdk.git emscripten
 cd ./emscripten/emscripten
-emsdk activate latest
+./emsdk activate latest
 cd ../..
 
 make -f Makefile.emscripten
