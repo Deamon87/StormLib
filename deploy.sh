@@ -26,26 +26,23 @@ REPO=`git config remote.origin.url`
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
-# Create and clone compiled emscripten
-
-make -f Makefile.emscripten
-exit 0
-
 # Clone the existing gh-pages for this repo into dist/
 # Create a new empty branch if gh-pages doesn't exist yet (should only happen on first deply)
-git clone $REPO dist
-cd dist
+git clone $REPO jsdist
+cd jsdist
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 cd ..
 
-# Clean dist existing contents
-rm -rf dist/**/* || exit 0
+# Clean jsdist existing contents
+rm -rf jsdist/**/* || exit 0
 
-compileBuild $SOURCE_BRANCH .
+
+#Compile sources with emscripten
+make -f Makefile.emscripten
 
 # Now let's go have some fun with the cloned repo test
 
-cd dist
+cd jsdist
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
